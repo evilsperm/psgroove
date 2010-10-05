@@ -43,8 +43,8 @@
 #define C_PORT_CONN  0x0001 /* connection */
 #define C_PORT_RESET 0x0010 /* reset */
 #define C_PORT_NONE  0x0000 /* no change */
-uint16_t port_status[6] = { PORT_EMPTY, PORT_EMPTY, PORT_EMPTY, PORT_EMPTY, PORT_EMPTY, PORT_EMPTY };
-uint16_t port_change[6] = { C_PORT_NONE, C_PORT_NONE, C_PORT_NONE, C_PORT_NONE, C_PORT_NONE, C_PORT_NONE };
+uint16_t port_status[5] = { PORT_EMPTY, PORT_EMPTY, PORT_EMPTY, PORT_EMPTY, PORT_EMPTY };
+uint16_t port_change[5] = { C_PORT_NONE, C_PORT_NONE, C_PORT_NONE, C_PORT_NONE, C_PORT_NONE };
 enum { 
 	init,
 	wait_hub_ready,
@@ -75,9 +75,7 @@ enum {
 	p4_disconnected,
 	p1_wait_disconnect,
 	p1_disconnected,
-	p6_wait_reset,
-	p6_wait_enumerate,
-	done,
+    done,
 } state = init;
 
 uint8_t hub_int_response = 0x00;
@@ -85,7 +83,7 @@ uint8_t hub_int_force_data0 = 0;
 int last_port_conn_clear = 0;
 int last_port_reset_clear = 0;
 
-int8_t port_addr[7] = { -1, -1, -1, -1, -1, -1, -1 };
+int8_t port_addr[6] = { -1, -1, -1, -1, -1, -1 };
 int8_t port_cur = -1;
 
 void USB_Device_SetDeviceAddress(uint8_t Address)
@@ -369,23 +367,8 @@ int main(void)
 
 		if (state == p1_wait_disconnect && last_port_conn_clear == 1)
 		{
-			state = p1_disconnected;
-			expire = 20;
-		}
-
-		// connect 6
-		if (state == p1_disconnected && expire == 0)
-		{
-			switch_port(0);
-			connect_port(6);
-			state = p6_wait_reset;
-		}
-
-		if (state == p6_wait_reset && last_port_reset_clear == 6)
-		{
-			switch_port(6);
-			state = p6_wait_enumerate;
-		}
+			state = done;
+        }
 
 		// done
 		if (state == done)
@@ -433,10 +416,6 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
 		case 5:
 			Address = (void *) port5_device_descriptor;
 			Size    = sizeof(port5_device_descriptor);
-			break;
-		case 6:
-			Address = (void *) port6_device_descriptor;
-			Size    = sizeof(port6_device_descriptor);
 			break;
 		}
 		break;
@@ -507,11 +486,6 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
 			Address = (void *) port5_config_descriptor;
 			Size    = sizeof(port5_config_descriptor);
 			break;
-		case 6:
-			// 1 config
-			Address = (void *) port6_config_descriptor;
-			Size    = sizeof(port6_config_descriptor);
-			break;
 		}
 		break;
 	case 0x29: // HUB descriptor (always to port 0 we'll assume)
@@ -522,7 +496,7 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
 			break;
 		}
 		break;
-	}
+    }
 	
 	*DescriptorAddress = Address;
 	return Size;
@@ -533,15 +507,6 @@ void EVENT_USB_Device_Disconnect(void) { }
 
 void EVENT_USB_Device_UnhandledControlRequest(void)
 {
-	if (port_cur == 6 && USB_ControlRequest.bRequest == 0xAA) {
-		/* holy crap, it worked! */
-		Endpoint_ClearSETUP();
-		Endpoint_ClearIN();
-		Endpoint_ClearStatusStage();
-		state = done;
-		return;
-	}		
-	
 	if (port_cur == 5 && USB_ControlRequest.bRequest == REQ_SetInterface)
 	{
 		/* can ignore this */
@@ -571,7 +536,7 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
 	    USB_ControlRequest.wValue == 0x00 &&
 	    USB_ControlRequest.wLength == 0x04) {
 		uint8_t p = USB_ControlRequest.wIndex;
-		if (p < 1 || p > 6) return;
+		if (p < 1 || p > 5) return;
 
 		Endpoint_ClearSETUP();
 		Endpoint_Write_Word_LE(port_status[p - 1]); // wHubStatus
@@ -586,21 +551,14 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
 	    USB_ControlRequest.bRequest == 0x03 && // SET_FEATURE
 	    USB_ControlRequest.wLength == 0x00) {
 		uint8_t p = USB_ControlRequest.wIndex;
-		if (p < 1 || p > 6) return;
+		if (p < 1 || p > 5) return;
 		
 		Endpoint_ClearSETUP();
 		Endpoint_ClearIN();
 		Endpoint_ClearStatusStage();
 
 		switch(USB_ControlRequest.wValue) {
-		case 0x0008: // PORT_POWER
-			if (p == 6 && state == init) {
-				/* after the 6th port is powered, wait a bit and continue */
-				state = hub_ready;
-				expire = 15;
-			}
-			break;
-		case 0x0004: // PORT_RESET
+        case 0x0004: // PORT_RESET
 			hub_int_response = (1 << p);
 			port_change[p - 1] |= C_PORT_RESET;
 			break;
@@ -613,7 +571,7 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
 	    USB_ControlRequest.bRequest == 0x01 && // CLEAR_FEATURE
 	    USB_ControlRequest.wLength == 0x00) {
 		uint8_t p = USB_ControlRequest.wIndex;
-		if (p < 1 || p > 6) return;
+		if (p < 1 || p > 5) return;
 		
 		Endpoint_ClearSETUP();
 		Endpoint_ClearIN();
