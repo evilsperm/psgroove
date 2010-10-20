@@ -9,15 +9,11 @@
 all_targets="teensy1 teensypp1 teensy2 teensypp2 \
               at90usbkey minimus1 minimus32 maximus \
               blackcat xplain olimex usbtinymkii \
-              bentio"
+              bentio openkubus"
 
-avr_gcc_ver=`avr-gcc --version | head -n 1 | awk '{print $3}'`
-if [[ $avr_gcc_ver < "4.3.5" ]]; then
-  echo "OpenKubus compilation disabled. You need avr-gcc version 4.3.5 or later."
-  echo "(You currently have avr-gcc version ${avr_gcc_ver})"
-else
-  all_targets="${all_targets} openkubus"
-fi
+function is_mcu_supported() {
+  avr-gcc --target-help | awk '/^Known MCU names:$/,/^$/' | grep -q $1
+}
 
 i=1
 for target in ${all_targets}; do
@@ -119,6 +115,10 @@ mkdir psgroove_hex
 $MAKE clean_list > /dev/null
 
 for target in ${targets}; do
+  if ! is_mcu_supported "${mcu[${!target}]}"; then
+    echo "$target compilation skipped. Your avr-gcc does not support ${mcu[${!target}]}." >&2
+    continue
+  fi
   for firmware in 3.01 3.10 3.15 3.41 ; do
     firmware=${firmware/./_}
     low_board=`echo ${board[${!target}]} | awk '{print tolower($0)}'`
