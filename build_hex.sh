@@ -57,7 +57,7 @@ board[$minimus1]=MINIMUS
 mhz_clock[$minimus1]=16
 name[$minimus1]="Minimus v1"
 
-mcu[$minimus32]=at90usb162
+mcu[$minimus32]=atmega32u2
 board[$minimus32]=MINIMUS
 mhz_clock[$minimus32]=16
 name[$minimus32]="Minimus 32"

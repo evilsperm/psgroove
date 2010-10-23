@@ -119,7 +119,7 @@ FIRMWARE_VERSION = 3_41
 ## Minimus 32
 ## It actually is atmega32u2 but at90usb162 is compatible and
 ## the latest avr-gcc doesn't compile for atmega32u2
-#MCU = at90usb162
+#MCU = atmega32u2
 #BOARD = MINIMUS
 #F_CPU = 16000000
 
