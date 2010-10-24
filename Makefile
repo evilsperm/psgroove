@@ -113,7 +113,7 @@ FIRMWARE_VERSION = 3_41
 
 ## Minimus v1
 #MCU = at90usb162
-#BOARD = MINUMUS
+#BOARD = MINIMUS
 #F_CPU = 16000000
 
 ## Minimus 32
