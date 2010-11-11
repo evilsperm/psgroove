@@ -1,0 +1,6 @@
+[submodule "lufa-lib"]
+	path = lufa-lib
+	url = http://github.com/psgroove/lufa-lib.git
+[submodule "PL3"]
+	path = PL3
+	url = git://github.com/evilsperm/PL3.git
