@@ -24,7 +24,7 @@
 #define default_shellcode_macro shellcode_egghunt_macro
 
 #define PAYLOAD_FW_DEPENDENT
-#define PAYLOAD payload_no_unauth_syscall
+#define PAYLOAD default_payload
 
 #if defined (FIRMWARE_3_41)
 #define FIRMWARE 3_41
