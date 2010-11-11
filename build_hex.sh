@@ -119,7 +119,7 @@ for target in ${targets}; do
     echo "$target compilation skipped. Your avr-gcc does not support ${mcu[${!target}]}." >&2
     continue
   fi
-  for firmware in 3.01 3.10 3.15 3.41 ; do
+  for firmware in 3.41 ; do
     firmware=${firmware/./_}
     low_board=`echo ${board[${!target}]} | awk '{print tolower($0)}'`
     filename="psgroove_${low_board}_${mcu[${!target}]}_${mhz_clock[${!target}]}mhz_firmware_${firmware}"
