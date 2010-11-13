@@ -23,8 +23,12 @@
 #define default_shellcode shellcode_egghunt
 #define default_shellcode_macro shellcode_egghunt_macro
 
+/* Select Your Payload */
 #define PAYLOAD_FW_DEPENDENT
 #define PAYLOAD default_payload
+/* #define PAYLOAD payload_dev */
+/* #define PAYLOAD payload_no_unauth_syscall */
+/* #define PAYLOAD payload_dump_elfs */
 
 #if defined (FIRMWARE_3_41)
 #define FIRMWARE 3_41
