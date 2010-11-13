@@ -158,6 +158,30 @@ FIRMWARE_VERSION = 3_41
 #BOARD = USBKEY
 #F_CPU = 8000000
 
+# ATAVRUSBRF01
+#MCU = at90usb162
+#BOARD = ATAVRUSBRF01
+#F_CPU = 16000000
+
+# UDIP8
+#MCU = at90usb162
+#BOARD = UDIP
+#F_CPU = 8000000
+
+# UDIP16
+#MCU = at90usb162
+#BOARD = UDIP
+#F_CPU = 16000000
+
+# AVRKEY
+#MCU = atmega32u2
+#BOARD = AVRKEY
+#F_CPU = 16000000
+
+# PS2CHIPER
+#MCU = at90usb162
+#BOARD = PS2CHIPER
+#F_CPU = 8000000
 
 # Input clock frequency.
 #     This will define a symbol, F_CLOCK, in all source code files equal to the 
