@@ -29,6 +29,7 @@
 /* #define PAYLOAD payload_dev */
 /* #define PAYLOAD payload_no_unauth_syscall */
 /* #define PAYLOAD payload_dump_elfs */
+/* #define PAYLOAD dump_lv2 */
 
 #if defined (FIRMWARE_3_41)
 #define FIRMWARE 3_41
