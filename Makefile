@@ -183,6 +183,11 @@ FIRMWARE_VERSION = 3_41
 #BOARD = PS2CHIPER
 #F_CPU = 8000000
 
+# JMDBU2
+MCU = atmega32u4
+BOARD = JMDBU2
+F_CPU = 8000000
+
 # Input clock frequency.
 #     This will define a symbol, F_CLOCK, in all source code files equal to the 
 #     input clock frequency (before any prescaling is performed) in Hz. This value may

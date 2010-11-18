@@ -10,7 +10,7 @@ all_targets="teensy1 teensypp1 teensy2 teensypp2 \
               at90usbkey minimus1 minimus32 maximus \
               blackcat xplain olimex usbtinymkii \
               bentio openkubus atvrusbrf01 udip8 udip16 \
-	      avrkey ps2chiper"
+	      avrkey ps2chiper jmdbu2"
 
 function is_mcu_supported() {
   avr-gcc --target-help | awk '/^Known MCU names:$/,/^$/' | grep -q $1
@@ -122,6 +122,11 @@ mcu[$ps2chiper]=at90usb162
 board[$ps2chiper]=PS2CHIPER
 mhz_clock[$ps2chiper]=8
 name[$ps2chiper]="PS2CHIPER"
+
+mcu[$jmdbu2]=atmega32u4
+board[$jmdbu2]=JMDBU2
+mhz_clock[$jmdbu2]=8
+name[$jmdbu2]="JMDBU2"
 
 while [ "x$1" != "x" ]; do
   targets="$targets ${1}"
